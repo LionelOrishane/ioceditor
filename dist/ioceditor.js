@@ -436,7 +436,7 @@ function save_to_localfile()
 {
 	var blob = new Blob([$('#iocxml').val()], {'type':'application\/octet-stream'});
 	
-	var filename = $("#author").val();
+	var filename = $("#name").val();
 	
 	if(filename)
 		filename = filename + '.ioc';
@@ -562,6 +562,7 @@ function create_iocxml(jsonobj)
 {
 	// Get fields from the form
 	var author = $('#author').val();
+	var short_description = $('#short_description').val();	
 	var description = $('#description').val();
 
 	// Create the static portion of the IOC xml
@@ -579,7 +580,7 @@ function create_iocxml(jsonobj)
 		"_xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance", "_xmlns:xsd" : "http://www.w3.org/2001/XMLSchema",
 		"_xmlns" : "http://openioc.org/schemas/OpenIOC_1.1", _id : create_id() , '_last-modified' : today_inxml,
 		"metadata" : {
-		short_description : description, "description" : description, authored_by : author,
+		short_description : short_description, "description" : description, authored_by : author,
 		authored_date : today_inxml, links : null
 		},
 		criteria : ioc_criteria
@@ -623,10 +624,10 @@ function load_xml()
 	this_ioc.authoreddate = json_obj.OpenIOC.metadata.authored_date;
 	
 	$('#author').val(this_ioc.authoredby);
+	if(this_ioc.shortDescription)
+		$('#short_description').val(this_ioc.shortDescription);	
 	if(this_ioc.description)
 		$('#description').val(this_ioc.description);
-	else if(this_ioc.shortDescription)
-		$('#description').val(this_ioc.shortDescription);
 	
 	var indicator = json_obj.OpenIOC.criteria.Indicator;
 	
