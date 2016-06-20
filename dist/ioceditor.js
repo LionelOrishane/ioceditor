@@ -33,10 +33,15 @@ function save_node_edit()
 		node.iocelementtext = $('#editElementValue').val();
 		node.iocelementtype = $('#editItemtype').val();
 		node.ioccondition = $('#editCondition').val();
-		
+		not = '';
+		cond = node.ioccondition;
+		if(node.ioccondition.indexOf('not') > -1) {
+			not = 'NOT ';
+			cond = cond.replace(" not", ""); 
+		}
 		var jstree_node = tree.get_node(sel);
 		bind_rename(false);
-		tree.rename_node(jstree_node, node.iocdocumentitemdisplay + ' ' + node.ioccondition + ' ' + node.iocelementtext);
+		tree.rename_node(jstree_node, not + node.iocdocumentitemdisplay + ' ' + cond + ' ' + node.iocelementtext);
 		bind_rename(true);
 		
 	}
@@ -239,7 +244,7 @@ function ioc_create_and()
 
 function ioc_create_item(iocdocumentitemDisplay,iocdocument,iocdocumentitem,valuetype) 
 {
-	ioc_create_indicatoritem(ITEM_TYPE,iocdocumentitemDisplay,iocdocument,iocdocumentitem, null, null,valuetype,true);
+	ioc_create_indicatoritem(ITEM_TYPE,iocdocumentitemDisplay,iocdocument,iocdocumentitem, "contains", null,valuetype,true);
 }
 
 /**
@@ -285,11 +290,18 @@ function ioc_create_indicatoritem(nodetype,striocdocumentitemDisplay,striocdocum
 	if(!sel.length) { return null; }
 	sel = sel[0];
 	
+	not = '';
+	cond = condition;
+	if(condition.indexOf('not') > -1) {
+		not = 'NOT ';
+		cond = condition.replace(" not", ""); 
+	}	
+	
 	var nodevalue; 
 	if(value == null)
 		nodevalue = 'Enter new value';
 	else
-		nodevalue = striocdocumentitemDisplay + ' ' + condition + ' ' + value;
+		nodevalue = not + striocdocumentitemDisplay + ' ' + cond + ' ' + value;
 	
 	var newnode = ref.create_node(sel, {text:nodevalue,type:nodetype});
 	
@@ -518,7 +530,15 @@ function create_indicatoritems_inxml(indicatoritems, items_intree)
 			if ( indicatoritems.IndicatorItem === undefined )
 				indicatoritems.IndicatorItem = [];
 			
-			indicatoritems.IndicatorItem.push( {_condition : node.ioccondition, _id : create_id(), 	
+			// Handle negate
+			not = 'false';
+			cond = node.ioccondition;
+			if(node.ioccondition.indexOf('not') > -1) {
+				not = 'true';
+				cond = cond.replace(" not", ""); 
+			}
+		
+			indicatoritems.IndicatorItem.push( { _condition : cond, _id : create_id(), _negate : not,
 					'Context' : { _document:node.iocdocument, _search:node.iocsearch, _type:'mir' }, 
 						'Content' : {_type : node.iocelementtype, "__text" : new_text} } );
 			
@@ -565,7 +585,7 @@ function create_iocxml(jsonobj)
 		criteria : ioc_criteria
 	};	
 	
-	ioc_json.openioc = ioc_header;
+	ioc_json.OpenIOC = ioc_header;
 	
 	// Create the Indicator and IndicatorItems
 	create_indicatoritems_inxml(ioc_criteria.Indicator, jsonobj[0].children);	
@@ -589,17 +609,18 @@ function load_xml()
 	var x2js = new X2JS({escapeMode : false });
 	var json_obj = x2js.xml_str2json(xml_text);
 	
-	if(json_obj == null || json_obj.openioc == null || json_obj.openioc.criteria == null)
+	if(json_obj == null || json_obj.OpenIOC == null || json_obj.OpenIOC.criteria == null)
 	{
 		// TODO Alert, null tree
+		alert('null tree');
 		return;		
 	}
 	
-	this_ioc.id = json_obj.openioc._id;
-	this_ioc.description = json_obj.openioc.metadata.description;
-	this_ioc.shortDescription = json_obj.openioc.metadata.short_description;
-	this_ioc.authoredby = json_obj.openioc.metadata.authored_by;
-	this_ioc.authoreddate = json_obj.openioc.metadata.authored_date;
+	this_ioc.id = json_obj.OpenIOC._id;
+	this_ioc.description = json_obj.OpenIOC.metadata.description;
+	this_ioc.shortDescription = json_obj.OpenIOC.metadata.short_description;
+	this_ioc.authoredby = json_obj.OpenIOC.metadata.authored_by;
+	this_ioc.authoreddate = json_obj.OpenIOC.metadata.authored_date;
 	
 	$('#author').val(this_ioc.authoredby);
 	if(this_ioc.description)
@@ -607,11 +628,12 @@ function load_xml()
 	else if(this_ioc.shortDescription)
 		$('#description').val(this_ioc.shortDescription);
 	
-	var indicator = json_obj.openioc.criteria.Indicator;
+	var indicator = json_obj.OpenIOC.criteria.Indicator;
 	
 	if( indicator == null )
 	{
 		// TODO Alert, empty tree
+		alert('Empty tree');
 		return;
 	}
 	
@@ -667,11 +689,13 @@ function ioc_create_tree(indicatorInput,dontcreate)
 				console.log(this_indicatoritem.Context._type);
 				console.log(this_indicatoritem.Context._search);
 				*/
-							
+				
+				if(this_indicatoritem._negate == "true") this_indicatoritem._condition = this_indicatoritem._condition + ' not';
 				var new_indicatoritem = ioc_create_indicatoritem(ITEM_TYPE,ioc_text_to_title_map[this_indicatoritem.Context._search],this_indicatoritem.Context._document,this_indicatoritem.Context._search, this_indicatoritem._condition, this_indicatoritem.Content.__text, this_indicatoritem.Content._type, false);
 			
 				// TODO Refactor this 
 				new_indicatoritem.ioccondition = this_indicatoritem._condition;
+				new_indicatoritem.negate = this_indicatoritem._negate;								
 				new_indicatoritem.iocelementtext = this_indicatoritem.Content.__text;
 				new_indicatoritem.iocelementtype = this_indicatoritem.Content._type;
 				// TODO

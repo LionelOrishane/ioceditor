@@ -9,7 +9,7 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="../../docs-assets/ico/favicon.png">
 
-    <title>IOC-EDT</title>
+    <title>IOC-Editor</title>
 
     <!-- Bootstrap and JQuery core CSS -->
     <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">    
@@ -17,7 +17,7 @@
 	<link rel="stylesheet" href="http://static.jstree.com/3.0.0-beta4/assets/dist/themes/default/style.min.css" />
 	
     <!-- Custom styles for this page -->
-	<link href="dist/css/ioceditor.css" rel="stylesheet" >
+	<link href="dist/css/ioceditor.min.css" rel="stylesheet" >
 	
 	<!-- Bootstrap and JQuery javascript -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
@@ -49,15 +49,15 @@
         <div class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
             <li><a href="#aboutdialog" data-toggle="modal">About</a></li>
-            <li><a href="mailto:admin@bluecloud.ws?subject=Availability&body=Let me know when IOC-Editor is available. ">Email</a></li>
+            <li><a href="mailto:">Email</a></li>
 			<li class="dropdown">
                   <a href="#" class="dropdown-toggle" data-toggle="dropdown">See Related <b class="caret"></b></a>
                   <ul class="dropdown-menu">
                     <li><a href="http://www.openioc.org/" target="_blank">OpenIOC Standard</a></li>
-                    <li><a href="http://www.mandiant.com/products/free_software/ioceditor/" target="_blank">Mandiant Editor</a></li>
+                    <li><a href="https://www.fireeye.com/services/freeware/ioc-editor.html" target="_blank">FireEye IOCEditor software</a></li>
                     <li><a href="https://groups.google.com/forum/#!forum/openioc" target="_blank">IOC Forum</a></li>
                     <li class="divider"></li>
-                    <li><a href="http://forensicartifacts.com/2012/01/iocs-and-rmos/" target="_blank">Sample IOC Repository</a></li>
+                    <li><a href="https://github.com/fireeye/iocs" target="_blank">FireEye IOC Repository</a></li>
                   </ul>
             </li>
             <li><a href="#helpdialog" data-toggle="modal">Help</a></li>
@@ -94,10 +94,10 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-					<h4 class="modal-title">About IOC-EDT</h4>
+					<h4 class="modal-title">About IOC-Editor</h4>
 					</div>
 					<div class="modal-body">
-					<p>IOC-EDT is an open source web based tool for creating indicators of compromise in the <a href="http://www.openioc.org/" target="_blank">OpenIOC</a> format.  This tool is currently in Beta mode and will be made available soon.</p>
+					<p>IOC-Editor is an open source web based tool for creating indicators of compromise in the <b><a href="http://www.openioc.org/" target="_blank">OpenIOC</a> 1.1</b> format. This tool is currently in Beta mode.</p>
 				</div>
 			</div><!-- /.modal-content -->
 		</div><!-- /.modal-dialog -->
@@ -125,6 +125,16 @@
 								<option value="contains not">Contains Not</option>
 								<option value="is">Is</option>
 								<option value="is not">Is Not</option>
+								<option value="matches">Matches</option>
+								<option value="matches not">Matches Not</option>
+								<option value="starts-with">Starts With</option>
+								<option value="starts-width not">Starts With Not</option>
+								<option value="ends-with">Ends With</option>
+								<option value="ends-with not">Ends With Not</option>
+								<option value="less-than">Less Than</option>
+								<option value="less-than not">Less Than Not</option>								
+								<option value="greater-than">Greater Than</option>
+								<option value="greater-than not">Greater Than Not</option>
 							</select>
 						</div><!-- col-xs-5 -->
 					</div>
@@ -138,10 +148,14 @@
 						<div class="col-xs-3">
 							<select class="form-control " id="editItemtype">
 								<option value="string">String</option>
-								<option value="int">Number</option>
+								<option value="int">Integer</option>
+								<option value="float">Float</option>								
 								<option value="md5">MD5</option>
+								<option value="sha1">SHA1</option>
+								<option value="sha256">SHA256</option>								
 								<option value="IP">IP</option>
 								<option value="date">DateTime</option>
+								<option value="bool">Boolean</option>								
 							</select>
 						</div><!-- col-xs-5 -->
 					</div><!-- row -->								
@@ -160,7 +174,7 @@
     	<div class="jumbotron" style="height: 100%;padding:5px;font-size:12px;background-color:#FFFCF0;">
     	<div class="container" >
 
-	    <h3>IOC-EDT <span class="label label-warning">Beta</span></h3>
+	    <h3>IOC-Editor (OpenIOC 1.1) <span class="label label-warning">Beta</span></h3>
 
 		<div class="input-group input-group-sm">
 			<span class="input-group-addon">Name</span>
@@ -179,26 +193,11 @@
         <div class="btn-group"> 
           <button type="button" class="btn btn-small btn-success indicator-btn" onclick="ioc_create_or();">Or</button> 
         </div>
-        <div class="btn-group" id="cookieItemsMenu"> 
+        <div class="btn-group" id="browserItemsMenu"> 
           <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
-            Cookie Items 
+            Browser Items 
           </button> 
         </div>
-        <div class="btn-group" id="urlItemsMenu"> 
-          <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
-            URL Items 
-          </button> 
-        </div>
-        <div class="btn-group" id="formItemsMenu"> 
-          <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
-            Form Items 
-          </button> 
-        </div>
-        <div class="btn-group" id="filedownloadItemsMenu"> 
-          <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
-            File Download Items 
-          </button> 
-        </div>        
         <div class="btn-group" id="emailItemsMenu"> 
           <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
             Email Items 
@@ -242,6 +241,11 @@
             Service Items 
           </button> 
         </div>
+        <div class="btn-group" id="eventlogItemsMenu"> 
+          <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
+            EventLog Items 
+          </button> 
+        </div>		
         <div class="btn-group" id="processItemsMenu"> 
           <button type="button" class="btn btn-small btn-indicatoritem dropdown-toggle indicator-btn" data-toggle="dropdown"> 
             Process Items 
@@ -286,7 +290,7 @@
 	
 	<div id="footer">
 		 <div class="navbar navbar-inner  navbar-fixed-bottom">
-		 	  <p class="text-muted"><center>&copy; bluecloud.ws 2014</center></p>
+		 	  <p class="text-muted"><center>&copy; 2016</center></p>
 		 </div>
 	</div>
 	

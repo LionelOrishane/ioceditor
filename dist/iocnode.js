@@ -32,7 +32,8 @@ iocNode.prototype.setIndicator = function(nodetype,nodetext)
 
 iocNode.prototype.setIndicatorItem = function(iocdocument,iocdocumentitem,iocdocumentitemDisplay,nodetype,nodetext)
 {
-	this.ioccondition="contains"; 				
+	this.ioccondition="contains";
+	this.negate="false";
 	this.iocelementtype="string";
 	this.iocelementtext="";
 	this.iocdocument=iocdocument;
@@ -58,6 +59,7 @@ iocNode.prototype.isIndicator = function()
 };
 
 iocNode.prototype.ioccondition=""; 				// IndicatorItem condition= : contains | contains not | is | is not
+iocNode.prototype.negate="false"; 				// negate: true | false
 iocNode.prototype.iocelementtype=""; 			// Content type= : string | MD5 | IP | Number
 iocNode.prototype.iocelementtext="";			// Actual value
 iocNode.prototype.iocdocument=""; 				// Context document= : e.g. ArpEntryItem
