@@ -436,7 +436,7 @@ function save_to_localfile()
 {
 	var blob = new Blob([$('#iocxml').val()], {'type':'application\/octet-stream'});
 	
-	var filename = $("#name").val();
+	var filename = $("#short_description").val().replace(/ /g,"_");
 	
 	if(filename)
 		filename = filename + '.ioc';
