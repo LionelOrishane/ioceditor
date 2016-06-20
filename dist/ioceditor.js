@@ -547,9 +547,9 @@ function create_iocxml(jsonobj)
 	// Create the static portion of the IOC xml
 	var ioc_json = {};
 	var ioc_header = {};
-	var ioc_definition = {};
+	var ioc_criteria = {};
 	
-	ioc_definition.Indicator = {_operator : OR_TYPE, _id : create_id()} ;
+	ioc_criteria.Indicator = {_operator : OR_TYPE, _id : create_id()} ;
 
 	var x2js = new X2JS({escapeMode : false });	
 	var today_inxml = x2js.toXmlDateTime( get_current_date() );
@@ -557,15 +557,18 @@ function create_iocxml(jsonobj)
 	ioc_header = 
 	{
 		"_xmlns:xsi" : "http://www.w3.org/2001/XMLSchema-instance", "_xmlns:xsd" : "http://www.w3.org/2001/XMLSchema",
-		"_xmlns" : "http://schemas.mandiant.com/2010/ioc", _id : create_id() , '_last-modified' : today_inxml,
+		"_xmlns" : "http://openioc.org/schemas/OpenIOC_1.1", _id : create_id() , '_last-modified' : today_inxml,
+		"metadata" : {
 		short_description : description, "description" : description, authored_by : author,
-		authored_date : today_inxml, links : null , definition : ioc_definition
+		authored_date : today_inxml, links : null
+		},
+		criteria : ioc_criteria
 	};	
 	
-	ioc_json.ioc = ioc_header;
+	ioc_json.openioc = ioc_header;
 	
 	// Create the Indicator and IndicatorItems
-	create_indicatoritems_inxml(ioc_definition.Indicator, jsonobj[0].children);	
+	create_indicatoritems_inxml(ioc_criteria.Indicator, jsonobj[0].children);	
 
 	// generate XML
 	var convertedxml = x2js.json2xml_str(ioc_json);
@@ -586,17 +589,17 @@ function load_xml()
 	var x2js = new X2JS({escapeMode : false });
 	var json_obj = x2js.xml_str2json(xml_text);
 	
-	if(json_obj == null || json_obj.ioc == null || json_obj.ioc.definition == null)
+	if(json_obj == null || json_obj.openioc == null || json_obj.openioc.criteria == null)
 	{
 		// TODO Alert, null tree
 		return;		
 	}
 	
-	this_ioc.id = json_obj.ioc._id;
-	this_ioc.description = json_obj.ioc.description;
-	this_ioc.shortDescription = json_obj.ioc.short_description;
-	this_ioc.authoredby = json_obj.ioc.authored_by;
-	this_ioc.authoreddate = json_obj.ioc.authored_date;
+	this_ioc.id = json_obj.openioc._id;
+	this_ioc.description = json_obj.openioc.metadata.description;
+	this_ioc.shortDescription = json_obj.openioc.metadata.short_description;
+	this_ioc.authoredby = json_obj.openioc.metadata.authored_by;
+	this_ioc.authoreddate = json_obj.openioc.metadata.authored_date;
 	
 	$('#author').val(this_ioc.authoredby);
 	if(this_ioc.description)
@@ -604,7 +607,7 @@ function load_xml()
 	else if(this_ioc.shortDescription)
 		$('#description').val(this_ioc.shortDescription);
 	
-	var indicator = json_obj.ioc.definition.Indicator;
+	var indicator = json_obj.openioc.criteria.Indicator;
 	
 	if( indicator == null )
 	{

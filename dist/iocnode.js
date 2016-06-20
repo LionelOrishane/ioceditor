@@ -123,7 +123,6 @@ IOC.prototype.description=null;
 IOC.prototype.keywords=null;
 IOC.prototype.authoredby=null;
 IOC.prototype.authoreddate=null;
-IOC.prototype.authoreddate=null;
 
 
 function delete_ioc(ioc)
