@@ -572,7 +572,7 @@ function create_iocxml(jsonobj)
 	
 	ioc_criteria.Indicator = {_operator : OR_TYPE, _id : create_id()} ;
 
-	var x2js = new X2JS({escapeMode : false });	
+	var x2js = new X2JS({escapeMode : false, useDoubleQuotes : true});	
 	var today_inxml = x2js.toXmlDateTime( get_current_date() );
 	
 	ioc_header = 
@@ -594,6 +594,8 @@ function create_iocxml(jsonobj)
 	// generate XML
 	var convertedxml = x2js.json2xml_str(ioc_json);
 	
+	convertedxml = '<?xml version="1.0" encoding="utf-8"?>' + convertedxml;
+	
 	return vkbeautify.xml( convertedxml );
 
 }
@@ -607,7 +609,7 @@ function load_xml()
 	
 	clear_all();
 			
-	var x2js = new X2JS({escapeMode : false });
+	var x2js = new X2JS({escapeMode : false, useDoubleQuotes : true});
 	var json_obj = x2js.xml_str2json(xml_text);
 	
 	if(json_obj == null || json_obj.OpenIOC == null || json_obj.OpenIOC.criteria == null)
