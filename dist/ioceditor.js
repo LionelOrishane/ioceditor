@@ -191,7 +191,7 @@ function contextmenu_items()
  */
 function ioc_initialize()
 {
-	$('#ioc_tree').append('<ul> <li data-jstree=\'{"icon":"glyphicon glyphicon-plus","opened":true,"selected":true, "type":"OR", "data":{"iocelement":"Indicator","iocoperator":"OR"}}\'>Or </li>  </ul>');
+	$('#ioc_tree').append('<ul> <li data-jstree=\'{"icon":"glyphicon glyphicon-plus-sign","opened":true,"selected":true, "type":"OR", "data":{"iocelement":"Indicator","iocoperator":"OR"}}\'>Or </li>  </ul>');
 
 	bind_treeready();
 
