@@ -4,9 +4,9 @@
  */
 
 var OR_TYPE="OR";
-var OR_TYPE_DISPLAY="Or";
+var OR_TYPE_DISPLAY="OR";
 var AND_TYPE="AND";
-var AND_TYPE_DISPLAY="And";
+var AND_TYPE_DISPLAY="AND";
 var ITEM_TYPE="item";
 var DEFAULT_TYPE="default";
 
