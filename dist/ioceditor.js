@@ -538,7 +538,7 @@ function create_indicatoritems_inxml(indicatoritems, items_intree)
 				cond = cond.replace(" not", ""); 
 			}
 		
-			indicatoritems.IndicatorItem.push( { _condition : cond, _id : create_id(), _negate : not,
+			indicatoritems.IndicatorItem.push( { _condition : cond, _id : create_id(), _negate : not, "_preserve-case" : "false",
 					'Context' : { _document:node.iocdocument, _search:node.iocsearch, _type:'mir' }, 
 						'Content' : {_type : node.iocelementtype, "__text" : new_text} } );
 			
